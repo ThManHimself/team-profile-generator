@@ -2,20 +2,34 @@ const inquirer = require('inquirer');
 const { writeFile } = require('./utils/generate-site');
 const generatePage = require('./src/page-template');
 
+const myTeam = {managers:[], engineers: [], interns: []};
 
 const promptAddEmployees = () => {
     return inquirer.prompt([
         {
             type: 'list',
             name: 'addEmployeeCheck',
-            message: "Would you like to add another Employee?",
-            choices: ['Manager', 'Engineer', 'Intern', "Nope! That's everyone!"],
-            default: false,
+            message: "Which employee would you like to add?",
+            choices: ['Manager', 'Engineer', 'Intern', "There are no more employees to add."],
         },
-    ]);
+    ])
+    .then(addEmployee => {
+        if (addEmployee.addEmployeeCheck === 'Manager') {
+            promptManager();
+        } 
+        if (addEmployee.addEmployeeCheck === 'Engineer') {
+            promptEngineer();
+        } 
+        if (addEmployee.addEmployeeCheck === 'Intern') {
+            promptIntern();
+        } 
+        if (addEmployee.addEmployeeCheck === 'There are no more employees to add.') {
+            return myTeam;
+        }
+    })
 };
 
-const promptManager = myTeam => {
+const promptManager = () => {
 
     // if there's no 'managers' array property, create one
     if (!myTeam.managers) {
@@ -81,24 +95,16 @@ const promptManager = myTeam => {
                 }
             }
         },
-        {
-            type: 'confirm',
-            name: 'addAnotherEmployee',
-            message: "Would you like to add another employee to your team?",
-            deafult: false
-        },
     ])
     .then(manager => {
-        myTeam.managers.push(manager);
-        if (manager.addAnotherEmployee) {
-            return promptAddEmployees(myTeam)
-        } else {
-            return myTeam;
-        }
+        let tempManager = new Manager(manager);
+        myTeam.managers.push(tempManager);
+        console.log(myTeam);
+        return promptAddEmployees();
     });
 };
 
-const promptEngineer = myTeam => {
+const promptEngineer = () => {
 
     // if there's no engineers array property, create one
     if (!myTeam.engineers) {
@@ -162,24 +168,16 @@ const promptEngineer = myTeam => {
                 }
             }
         },
-        {
-            type: 'confirm',
-            name: 'addAnotherEmployee',
-            message: "Would you like to add another employee to your team?",
-            deafult: false
-        },
     ])
     .then(engineer => {
-        myTeam.engineers.push(engineer);
-        if (engineer.addAnotherEmployee) {
-            return promptAddEmployees(myTeam)
-        } else {
-            return myTeam;
-        }
+        let tempEngineer = new Engineer(engineer);
+        myTeam.engineers.push(tempEngineer);
+        console.log(myTeam);
+        return promptAddEmployees()
     });
 };
 
-const promptIntern = myTeam => {
+const promptIntern = () => {
     
     // if there's no interns array property, create one
     if (!myTeam.interns) {
@@ -245,31 +243,26 @@ const promptIntern = myTeam => {
                 }
             }
         },
-        {
-            type: 'confirm',
-            name: 'addAnotherEmployee',
-            message: "Would you like to add another employee to your team?",
-            deafult: false
-        },
     ])
     .then(intern => {
-        myTeam.interns.push(intern);
-        if (engineer.addAnotherEmployee) {
-            return promptAddEmployees(myTeam)
-        } else {
-            return myTeam;
-        }
+        let tempIntern = new Intern(intern);
+        myTeam.interns.push(tempIntern);
+        console.log(myTeam);
+        return promptAddEmployees()
     });
 };
-
-promptAddEmployees()
-    .then(addEmployee => {
-        if (addEmployee.addEmployeeCheck === 'Manager') {
-            promptManager();
-        } else if (addEmployee.addEmployeeCheck === 'Engineer') {
-            promptEngineer();
-        } else if (addEmployee.addEmployeeCheck === 'Intern') {
-            promptIntern();
-        }
-    })
-    .then()
+function init() {
+    promptAddEmployees()
+        .then(teamData => {
+            console.log(teamData);
+            generatePage(teamData);
+        })
+        .then(pageHTML => {
+            console.log(pageHTML);
+            return writeFile(pageHTML);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+init();
