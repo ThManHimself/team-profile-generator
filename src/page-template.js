@@ -1,22 +1,30 @@
 // create manager card
 const generateManager = managerInfo => {
-    return `
-    <!-- Manager Card -->
-    <div class="col s12 m4 center">
-        <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-                <h4>${manager.name}</h4>
-                <span class="card-title">${manager.getRole()}</span>
-                <ul>
-                    <li>ID: ${manager.managerId}</li>
-                    <li>Email: <a href="mailto:${manager.managerEmail}">${manager.managerEmail}</a></li>
-                    <li>Office Number: ${manager.managerOfficeNumber}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    if(!managerInfo) {
+        return '';
+    }
 
-    `;
+    var managerList = '';
+	for (var i = 0; i < managerInfo.length; i++) {
+		managerList +=
+		`
+			<!-- Manager Card -->
+			<div class="col s12 m4 center">
+				<div class="card blue-grey darken-1">
+					<div class="card-content white-text">
+						<h4>${managerInfo[i].name}</h4>
+						<span class="card-title">${managerInfo[i].getRole()}</span>
+						<ul>
+							<li>Employee ID: ${managerInfo[i].id}</li>
+							<li>Email: <a href="mailto:${managerInfo[i].email}">${managerInfo[i].email}</a></li>
+							<li>Office Number: ${managerInfo[i].officeNumber}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		`;
+	}
+	return managerList;
 };
 
 // create Engineer card
@@ -25,23 +33,27 @@ const generateEngineer = engineerInfo => {
         return '';
     }
 
-    return `
-    <!-- Engineer Card -->
-    <div class="col s12 m4 center">
-        <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-                <h4>${engineer.engineerName}</h4>
-                <span class="card-title">${engineer.getRole()}</span>
-                <ul>
-                    <li>ID: ${engineer.engineerId}</li>
-                    <li>Email: <a href="mailto:${engineer.engineerEmail}">${engineer.engineerEmail}</a></li>
-                    <li>GitHub: <a href="https://github.com/${engineer.engineerGithub}">${engineer.engineerGithub}</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    `;
+    var engineerList = '';
+	for (var i = 0; i < engineerInfo.length; i++) {
+		engineerList +=
+		`
+			<!-- engineer Card -->
+			<div class="col s12 m4 center">
+				<div class="card blue-grey darken-1">
+					<div class="card-content white-text">
+						<h4>${engineerInfo[i].name}</h4>
+						<span class="card-title">${engineerInfo[i].getRole()}</span>
+						<ul>
+							<li>Employee ID: ${engineerInfo[i].id}</li>
+							<li>Email: <a href="mailto:${engineerInfo[i].email}">${engineerInfo[i].email}</a></li>
+							<li>Github: ${engineerInfo[i].github}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		`;
+	}
+	return engineerList;
 };
 
 // create Intern card
@@ -50,27 +62,34 @@ const generateIntern = internInfo => {
         return '';
     }
 
-    return `
-    <!-- Intern Card -->
-    <div class="col s12 m4 center">
-        <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-                <h4>${intern.internName}</h4>
-                <span class="card-title">${intern.getRole()}</span>
-                <ul>
-                    <li>ID: ${intern.internId}</li>
-                    <li>Email: <a href="mailto:${intern.internEmail}">${intern.internEmail}</a></li>
-                    <li>Office Number: ${intern.internSchool}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    `;
+    var internList = '';
+	for (var i = 0; i < internInfo.length; i++) {
+		internList +=
+		`
+			<!-- intern Card -->
+			<div class="col s12 m4 center">
+				<div class="card blue-grey darken-1">
+					<div class="card-content white-text">
+						<h4>${internInfo[i].name}</h4>
+						<span class="card-title">${internInfo[i].getRole()}</span>
+						<ul>
+							<li>Employee ID: ${internInfo[i].id}</li>
+							<li>Email: <a href="mailto:${internInfo[i].email}">${internInfo[i].email}</a></li>
+							<li>School: ${internInfo[i].getSchool()}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		`;
+	}
+	return internList;
 };
 
 function generatePage(templateData) {
-    const { managers, engineers, interns } = templateData;
+    // const { managers, engineers, interns } = templateData;
+    const managers = templateData.managers
+    const engineers = templateData.engineers
+    const interns = templateData.interns
 
     return `
     <!DOCTYPE html>
@@ -95,9 +114,9 @@ function generatePage(templateData) {
     
         <!-- Employee Cards -->
         <div class="row">
-            ${managers.map(manager=> generateManager(manager)).join('')}
-            ${engineers.map(engineer => generateEngineer(engineer)).join('')}
-            ${interns.map(intern => generateIntern(intern)).join('')}    
+            ${generateManager(managers)}
+            ${generateEngineer(engineers)}
+            ${generateIntern(interns)}
         </div>
     
     

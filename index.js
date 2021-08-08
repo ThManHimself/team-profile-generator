@@ -1,6 +1,9 @@
 const inquirer = require('inquirer');
 const { writeFile } = require('./utils/generate-site');
 const generatePage = require('./src/page-template');
+const Manager = require('./lib/Manager')
+const Engineer = require('./lib/Engineer')
+const Intern = require('./lib/Intern')
 
 const myTeam = {managers:[], engineers: [], interns: []};
 
@@ -24,7 +27,7 @@ const promptAddEmployees = () => {
             promptIntern();
         } 
         if (addEmployee.addEmployeeCheck === 'There are no more employees to add.') {
-            return myTeam;
+            return writeFile(generatePage(myTeam));
         }
     })
 };
@@ -47,8 +50,8 @@ const promptManager = () => {
             type: 'input',
             name: 'name',
             message: "What is your team Manager's name?",
-            validate: nameInput =>{
-                if (nameInput) {
+            validate: name =>{
+                if (name) {
                     return true;
                 } else {
                     console.log("Please enter your Manager's name!");
@@ -58,10 +61,10 @@ const promptManager = () => {
         },
         {
             type: 'input',
-            name: 'managerId',
+            name: 'id',
             message: "What is the Manager's ID Number?",
-            validate: nameInput =>{
-                if (nameInput) {
+            validate: id =>{
+                if (id) {
                     return true;
                 } else {
                     console.log("Please enter your Manager's Employee ID!");
@@ -71,10 +74,10 @@ const promptManager = () => {
         },
         {
             type: 'input',
-            name: 'managerEmail',
+            name: 'email',
             message: "What is your Manager's Email Address?",
-            validate: ManagerNameInput =>{
-                if (ManagerNameInput) {
+            validate: email =>{
+                if (email) {
                     return true;
                 } else {
                     console.log("Please enter your Manager's Email!");
@@ -84,10 +87,10 @@ const promptManager = () => {
         },
         {
             type: 'input',
-            name: 'managerOfficeNumber',
+            name: 'officeNumber',
             message: "What is your Manager's Office Number?",
-            validate: managerOfficeNumber =>{
-                if (managerOfficeNumber) {
+            validate: officeNumber =>{
+                if (officeNumber) {
                     return true;
                 } else {
                     console.log("Please enter your Manager's Office Number!");
@@ -97,7 +100,7 @@ const promptManager = () => {
         },
     ])
     .then(manager => {
-        let tempManager = new Manager(manager);
+        let tempManager = new Manager(manager.name, manager.id, manager.email, manager.officeNumber);
         myTeam.managers.push(tempManager);
         console.log(myTeam);
         return promptAddEmployees();
@@ -120,10 +123,10 @@ const promptEngineer = () => {
     return inquirer.prompt([
         {
             type: 'input',
-            name: 'engineerName',
+            name: 'name',
             message: "What is your Engineer's name?",
-            validate: engineerNameInput => {
-                if (engineerNameInput) {
+            validate: name => {
+                if (name) {
                     return true;
                 } else {
                     console.log("Please enter your Engineer's name!");
@@ -133,10 +136,10 @@ const promptEngineer = () => {
         },
         {
             type: 'input',
-            name: 'engineerId',
+            name: 'id',
             message: "What is your Engineer's employee ID Number?",
-            validate: engineerId => {
-                if (engineerId) {
+            validate: id => {
+                if (id) {
                     return true;
                 } else {
                     console.log("Please enter your Engineer's employee ID Number!");
@@ -146,10 +149,10 @@ const promptEngineer = () => {
         },
         {
             type: 'input',
-            name: 'engineerEmail',
+            name: 'email',
             message: "What is your Engineer's Email Address?",
-            validate: engineerEmailAddress => {
-                if (engineerEmailAddress) {
+            validate: email => {
+                if (email) {
                     return true;
                 } else { 
                     console.log("Please enter your Engineer's email address!");
@@ -158,10 +161,10 @@ const promptEngineer = () => {
         },
         {
             type: 'input',
-            name: 'engineerGithub',
+            name: 'github',
             message: "What is your Engineer's Github username?",
-            validate: engineerGithub => {
-                if (engineerGithub) { 
+            validate: github => {
+                if (github) { 
                     return true;
                 } else {
                     console.log("Please enter your Engineer's Github username!");
@@ -170,7 +173,7 @@ const promptEngineer = () => {
         },
     ])
     .then(engineer => {
-        let tempEngineer = new Engineer(engineer);
+        let tempEngineer = new Engineer(engineer.name, engineer.id, engineer.email, engineer.github);
         myTeam.engineers.push(tempEngineer);
         console.log(myTeam);
         return promptAddEmployees()
@@ -193,10 +196,10 @@ const promptIntern = () => {
     return inquirer.prompt([
         {
             type: 'input',
-            name: 'internName',
+            name: 'name',
             message: "What is the name of your Intern?",
-            validate: internName => {
-                if (internName) {
+            validate: name => {
+                if (name) {
                     return true;
                 } else {
                     console.log("Please enter your Inter's name!");
@@ -206,10 +209,10 @@ const promptIntern = () => {
         },
         {
             type: 'input',
-            name: 'internId',
+            name: 'id',
             message: "What is your Intern's employee ID Number?",
-            validate: internID => {
-                if (internID) {
+            validate: id => {
+                if (id) {
                     return true;
                 } else {
                     console.log("Please enter your Intern's ID Number!");
@@ -219,10 +222,10 @@ const promptIntern = () => {
         },
         {
             type: 'input',
-            name: 'internEmail',
+            name: 'email',
             message: "What is the Intern's Email address?",
-            validate: internEmail => {
-                if (internEmail) {
+            validate: email => {
+                if (email) {
                     return true;
                 } else {
                     console.log("Please enter the Intern's Email address!");
@@ -232,10 +235,10 @@ const promptIntern = () => {
         },
         {
             type: 'input',
-            name: 'internSchool',
+            name: 'school',
             message: "What school is the intern attending?",
-            validate: internSchool => {
-                if (internSchool) {
+            validate: school => {
+                if (school) {
                     return true;
                 } else {
                     console.log("Please enter the name of the school the intern attends!");
@@ -245,24 +248,28 @@ const promptIntern = () => {
         },
     ])
     .then(intern => {
-        let tempIntern = new Intern(intern);
+        let tempIntern = new Intern(intern.name, intern.id, intern.email, intern.school);
         myTeam.interns.push(tempIntern);
         console.log(myTeam);
         return promptAddEmployees()
     });
 };
+
 function init() {
-    promptAddEmployees()
-        .then(teamData => {
-            console.log(teamData);
-            generatePage(teamData);
-        })
-        .then(pageHTML => {
-            console.log(pageHTML);
-            return writeFile(pageHTML);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    promptAddEmployees();
 }
 init();
+// function init() {
+//     promptAddEmployees()
+//         .then(teamData => {
+//             console.log(teamData);
+//             return generatePage(teamData);
+//         }) 
+//         .then(pageHTML => {
+//             console.log(pageHTML);
+//             return writeFile(pageHTML);
+//         })
+//         .catch(err => {
+//             console.log(err);
+//         });
+// }
