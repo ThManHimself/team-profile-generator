@@ -2,11 +2,47 @@ const inquirer = require('inquirer');
 const { writeFile } = require('./utils/generate-site');
 const generatePage = require('./src/page-template');
 
-const promptUser = () => {
+const myTeam = {managers:[], engineers: [], interns: []};
+
+const promptAddEmployees = () => {
     return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'addEmployeeCheck',
+            message: "Which employee would you like to add?",
+            choices: ['Manager', 'Engineer', 'Intern', "There are no more employees to add."],
+        },
+    ])
+    .then(addEmployee => {
+        if (addEmployee.addEmployeeCheck === 'Manager') {
+            promptManager();
+        } 
+        if (addEmployee.addEmployeeCheck === 'Engineer') {
+            promptEngineer();
+        } 
+        if (addEmployee.addEmployeeCheck === 'Intern') {
+            promptIntern();
+        } 
+        if (addEmployee.addEmployeeCheck === 'There are no more employees to add.') {
+            return myTeam;
+        }
+    })
+};
 
-        // MANAGER QUESTIONS
+const promptManager = () => {
 
+    // if there's no 'managers' array property, create one
+    if (!myTeam.managers) {
+        myTeam.managers = [];
+    }
+
+    console.log(`
+    =================
+    Add a Manager
+    =================
+    `);
+
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'name',
@@ -59,18 +95,29 @@ const promptUser = () => {
                 }
             }
         },
+    ])
+    .then(manager => {
+        let tempManager = new Manager(manager);
+        myTeam.managers.push(tempManager);
+        console.log(myTeam);
+        return promptAddEmployees();
+    });
+};
 
-        // ADD ADDITIONAL EMPLOYEES???
+const promptEngineer = () => {
 
-        {
-            type: 'checkbox',
-            name: 'addEmployeeCheck',
-            message: "Would you like to add another Employee?",
-            choices: ['Manager', 'Engineer', 'Intern', "Nope! That's everyone!"]
-        },
+    // if there's no engineers array property, create one
+    if (!myTeam.engineers) {
+        myTeam.engineers = [];
+    }
 
-        // ENGINEER QUESTIONS
-
+    console.log(`
+    =================
+    Add an Engineer
+    =================
+    `);
+    
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'engineerName',
@@ -121,9 +168,29 @@ const promptUser = () => {
                 }
             }
         },
-        
-        // INTERN QUESTIONS
+    ])
+    .then(engineer => {
+        let tempEngineer = new Engineer(engineer);
+        myTeam.engineers.push(tempEngineer);
+        console.log(myTeam);
+        return promptAddEmployees()
+    });
+};
 
+const promptIntern = () => {
+    
+    // if there's no interns array property, create one
+    if (!myTeam.interns) {
+        myTeam.interns = [];
+    }
+
+    console.log(`
+    =================
+    Add an Intern
+    =================
+    `);
+
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'internName',
@@ -176,5 +243,26 @@ const promptUser = () => {
                 }
             }
         },
-    ]);
+    ])
+    .then(intern => {
+        let tempIntern = new Intern(intern);
+        myTeam.interns.push(tempIntern);
+        console.log(myTeam);
+        return promptAddEmployees()
+    });
 };
+function init() {
+    promptAddEmployees()
+        .then(teamData => {
+            console.log(teamData);
+            generatePage(teamData);
+        })
+        .then(pageHTML => {
+            console.log(pageHTML);
+            return writeFile(pageHTML);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+init();
