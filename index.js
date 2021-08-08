@@ -259,17 +259,3 @@ function init() {
     promptAddEmployees();
 }
 init();
-// function init() {
-//     promptAddEmployees()
-//         .then(teamData => {
-//             console.log(teamData);
-//             return generatePage(teamData);
-//         }) 
-//         .then(pageHTML => {
-//             console.log(pageHTML);
-//             return writeFile(pageHTML);
-//         })
-//         .catch(err => {
-//             console.log(err);
-//         });
-// }

@@ -46,7 +46,7 @@ const generateEngineer = engineerInfo => {
 						<ul>
 							<li>Employee ID: ${engineerInfo[i].id}</li>
 							<li>Email: <a href="mailto:${engineerInfo[i].email}">${engineerInfo[i].email}</a></li>
-							<li>Github: ${engineerInfo[i].github}</li>
+							<li>Github: <a href="https://github.com/${engineerInfo[i].github}/">${engineerInfo[i].github}</a></li>
 						</ul>
 					</div>
 				</div>
@@ -86,7 +86,6 @@ const generateIntern = internInfo => {
 };
 
 function generatePage(templateData) {
-    // const { managers, engineers, interns } = templateData;
     const managers = templateData.managers
     const engineers = templateData.engineers
     const interns = templateData.interns
@@ -128,43 +127,3 @@ function generatePage(templateData) {
 }
 // export function to generate entire page
 module.exports = generatePage;
-
-// (templateData = {managers:[], engineers: [], interns: []}) => {
-//     // destructure page data by section
-//     const { managers, engineers, interns } = templateData;
-
-//     return `
-//     <!DOCTYPE html>
-//     <html lang="en">
-//     <head>
-//         <meta charset="UTF-8">
-//         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-//         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//         <title>My Team</title>
-//         <!-- Materialize css -->
-//         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-//     </head>
-//     <body>
-//         <!-- Website Header -->
-//         <header>
-//             <nav>
-//                 <div class="nav-wrapper">
-//                     <a href="#" class="brand-logo center">My Team</a>
-//                 </div>
-//             </nav>
-//         </header>
-    
-//         <!-- Employee Cards -->
-//         <div class="row">
-//             ${managers.map(manager=> generateManager(manager)).join('')}
-//             ${engineers.map(engineer => generateEngineer(engineer)).join('')}
-//             ${interns.map(intern => generateIntern(intern)).join('')}    
-//         </div>
-    
-    
-//         <!-- Materialize -->
-//         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-//     </body>
-//     </html>
-//     `;
-// };
